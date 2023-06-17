@@ -8,7 +8,7 @@ def serialize_post(post):
         'title': post.title,
         'teaser_text': post.text[:200],
         'author': post.author.username,
-        'comments_amount': post.comments.count(),
+        'comments_amount': post.comments_count,
         'image_url': post.image.url if post.image else None,
         'published_at': post.published_at,
         'slug': post.slug,
@@ -64,7 +64,7 @@ def post_detail(request, slug):
         'text': post.text,
         'author': post.author.username,
         'comments': serialized_comments,
-        'likes_amount': post.likes.count(),
+        'likes_amount': post.likes_count,
         'image_url': post.image.url if post.image else None,
         'published_at': post.published_at,
         'slug': post.slug,
@@ -95,8 +95,7 @@ def tag_filter(request, tag_title):
     most_popular_posts = Post.objects.popular().select_related('author')[:5] \
         .tags_prefetch()
 
-    related_posts = tag.posts.select_related('author').tags_prefetch()[:20] \
-        .annotate(comments_count=Count('comments'))
+    related_posts = tag.posts.select_related('author').tags_prefetch().popular()[:20]
 
     context = {
         'tag': tag.title,

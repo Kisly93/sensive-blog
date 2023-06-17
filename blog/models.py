@@ -10,8 +10,12 @@ class PostQuerySet(models.QuerySet):
         return posts_at_year
 
     def popular(self):
-        posts_popular = self.annotate(likes_count=Count('likes')).order_by('-likes_count')
+        posts_popular = self.annotate(
+            likes_count=Count('likes'),
+            comments_count=Count('comments')
+        ).order_by('-likes_count')
         return posts_popular
+
 
     def fetch_with_comments_count(self):
         most_popular_posts_ids = [post.id for post in self]
