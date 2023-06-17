@@ -29,7 +29,7 @@ def index(request):
         .tags_prefetch().fetch_with_comments_count()
 
     fresh_posts = Post.objects.order_by('published_at').select_related('author') \
-        .tags_prefetch().annotate(comments_count=Count('comments'))
+        .tags_prefetch().fetch_with_comments_count()
 
     most_fresh_posts = list(fresh_posts)[-5:]
 
