@@ -91,9 +91,9 @@ def tag_filter(request, tag_title):
     most_popular_tags = Tag.objects.popular()[:5]
 
     most_popular_posts = Post.objects.popular().select_related('author')[:5] \
-        .tags_prefetch()
+        .tags_prefetch().fetch_with_comments_count()
 
-    related_posts = tag.posts.select_related('author').tags_prefetch().popular()[:20]
+    related_posts = tag.posts.select_related('author').tags_prefetch().popular()[:20].fetch_with_comments_count()
 
     context = {
         'tag': tag.title,
